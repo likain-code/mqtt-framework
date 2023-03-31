@@ -34,6 +34,7 @@
 
 1. 开始
 
+
 2. 配置文件格式(以properties文件为例)
 
    `mqtt.enable=true  # 是否开启mqtt功能`
@@ -50,21 +51,26 @@
 
    `mqtt.topic[x]=xxxx  # 想要订阅的主题，数组形式`
 
+
 3. MQTT连接
 
    无需连接，类似于tomcat服务器，配置文件写好后启动项目即可自动完成与MQTT服务器的连接。
+
 
 4. MQTT断线重连接
 
    发生异常时，MQTT服务器会断开与自己服务器的连接，本框架会自动完成重新连接，无需自己配置。
 
+
 5. MqttClient对象获取
 
    该框架在正确地连接MQTT服务器后，会自动生成一个mqttClient对象并注入bean容器中，只需将其从容器中获取出来即可。
 
+
 6. 消息发布
 
    使用mqttClient对象的publish方法完成消息发布。
+
 
 7. 消息接收
 
