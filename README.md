@@ -74,4 +74,4 @@
 
 7. 消息接收
 
-   写一个处理器类继承AbstractMessageProcessor类并重写process方法，最后将该类注入bean容器即可。其中topic参数为消息来自哪个主题，mqttMessage参数可获取具体消息体。
+   编写一个类继承AbstractMessageProcessor类并重写process方法，最后将该类注入bean容器即可。其中topic参数为消息来自哪个主题，mqttMessage参数可获取具体消息体。
