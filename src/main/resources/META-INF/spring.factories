@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.yzu.cloud.configure.MqttConfiguration
+  org.yzu.cloud.configure.MqttConfiguration,\
+  org.yzu.cloud.configure.BeanFactoryConfiguration
