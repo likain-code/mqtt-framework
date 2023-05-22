@@ -28,8 +28,8 @@ public class MqttConfiguration implements InitializingBean {
 
     private final MqttProperties mqttProperties;
     private final BeanFactoryWrapper beanFactoryWrapper;
-    private static final int MQTT_INITIALIZATION_TASK_POOL_SIZE = 2;
-    private static final int MQTT_THREAD_FACTORY_INITIAL_NUMBER = 1;
+    ExecutorService service = Executors
+            .newFixedThreadPool(1, new MqttThreadFactory(1));
     private Future<Boolean> future;
 
     private static class MqttThreadFactory implements ThreadFactory {
@@ -75,14 +75,7 @@ public class MqttConfiguration implements InitializingBean {
 
     @EventListener(ApplicationReadyEvent.class)
     public void executeMqttInitialization() {
-        ExecutorService service = Executors
-                .newFixedThreadPool(MQTT_INITIALIZATION_TASK_POOL_SIZE, new MqttThreadFactory(MQTT_THREAD_FACTORY_INITIAL_NUMBER));
-
         future = service.submit(new InitializeHandler(mqttProperties, beanFactoryWrapper));
-        service.submit(this::callMqttInitializeResult);
-    }
-
-    private void callMqttInitializeResult() {
         try {
             if (future.get()) {
                 if (future.get()) {
@@ -93,6 +86,8 @@ public class MqttConfiguration implements InitializingBean {
             }
         } catch (Exception e) {
             log.error("UnExpected failure occurred when execute mqtt initialization task", e);
+        } finally {
+            service.shutdown();
         }
     }
 }
