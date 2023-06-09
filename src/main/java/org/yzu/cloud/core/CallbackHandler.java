@@ -11,6 +11,7 @@ import org.yzu.cloud.common.MqttProperties;
 import org.yzu.cloud.exception.MqttException;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 @Slf4j
 public class CallbackHandler implements MqttCallback {
@@ -45,14 +46,15 @@ public class CallbackHandler implements MqttCallback {
             throw new MqttException("Mqtt failure occurred when attempted to reconnect to broker", e);
         }
 
-        Arrays.stream(mqttProperties.getTopic()).forEach(s -> {
+        String[] topics = mqttProperties.getTopic();
+        for (String topic : topics) {
             try {
-                mqttClient.subscribe(s);
-                log.debug("Mqtt topic [{}] resubscribed", s);
+                mqttClient.subscribe(topic);
+                log.debug("Mqtt topic [{}] resubscribed", topics);
             } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
                 throw new MqttException("Mqtt failure occurred when attempted to resubscribe topics", e);
             }
-        });
+        }
 
         mqttClient.setCallback(this);
     }
@@ -64,12 +66,12 @@ public class CallbackHandler implements MqttCallback {
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-        if (iMqttDeliveryToken.isComplete()) {
-            try {
-                log.debug("Message [{}] delivery completed", new String(iMqttDeliveryToken.getMessage().getPayload()));
-            } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
-                throw new MqttException("Something wrong when mqtt message delivery", e);
-            }
-        }
+        // if (iMqttDeliveryToken.isComplete()) {
+        //     try {
+        //         log.debug("Message [{}] delivery completed", new String(iMqttDeliveryToken.getMessage().getPayload()));
+        //     } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
+        //         throw new MqttException("Something wrong when mqtt message delivery", e);
+        //     }
+        // }
     }
 }
