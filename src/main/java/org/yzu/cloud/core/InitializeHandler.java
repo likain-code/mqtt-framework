@@ -8,7 +8,6 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.yzu.cloud.common.BeanFactoryWrapper;
 import org.yzu.cloud.common.MqttProperties;
 
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -54,15 +53,16 @@ public class InitializeHandler implements Callable<Boolean> {
         }
 
         AtomicBoolean subscribeFlag = new AtomicBoolean(true);
-        Arrays.stream(mqttProperties.getTopic()).forEach(s -> {
+        String[] topics = mqttProperties.getTopic();
+        for (String topic : topics) {
             try {
-                mqttClient.subscribe(s);
-                log.debug("Mqtt topic [{}] subscribed", s);
+                mqttClient.subscribe(topic);
+                log.debug("Mqtt topic [{}] subscribed", topic);
             } catch (MqttException e) {
-                log.error("Mqtt failure occurred when attempted to subscribe topic [{}]", s, e);
+                log.error("Mqtt failure occurred when attempted to subscribe topic [{}]", topic, e);
                 subscribeFlag.set(false);
             }
-        });
+        }
 
         if (!subscribeFlag.get()) {
             return false;
